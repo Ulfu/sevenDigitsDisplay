@@ -63,9 +63,15 @@ void hitTwo() {
 }
 void resetGame() {
   if (gameOverTimer - millis() > timer && gameOver) {//Reset game variables
-    counter = 0;
+    if (counter > 7){
+      counter = 0;
+      countUp = true;
+    }
+    if (counter < 0){
+      counter = 7;
+      countUp = false;
+    }
     gameOver = false;
-    countUp = true;
     writeCounter();
     digitalWrite(onOffPin, HIGH);
   }
