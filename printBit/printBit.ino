@@ -7,6 +7,7 @@ boolean countUp = true;
 boolean gameOver = false;
 int scorePlayerOne = 0;
 int scorePlayerTwo = 0;
+int ledSpeed = 800;
 
 boolean onOff = true;
 #define onOffPin 7
@@ -41,9 +42,9 @@ void loop() {
     setGameOver();
   }
   Serial.println(counter);
-  delay(1000); //wait 1s
   
   if (!gameOver) {
+    delay(ledSpeed); //wait
     if (countUp){
       counter++;
     }
@@ -52,6 +53,7 @@ void loop() {
     }
   }
   if (gameOver) {
+    delay(1000); //wait
     onOff = !onOff;
     digitalWrite(onOffPin, onOff);
   }
@@ -73,11 +75,11 @@ void hitTwo() {
 }
 void resetGame() {
   if (gameOverTimer - millis() > 2000 && gameOver) {//Reset game variables
-    if (counter > 7){
+    if (counter >= 7){
       counter = 0;
       countUp = true;
     }
-    if (counter < 0){
+    if (counter =< 0){
       counter = 7;
       countUp = false;
     }
@@ -89,6 +91,7 @@ void resetGame() {
 }
 
 void setGameOver() {
+  ledSpeed *= 0.8;
   if (counter > 7){
     scorePlayerOne ++;
     counter = 7; 
