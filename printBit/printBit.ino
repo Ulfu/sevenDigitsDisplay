@@ -5,7 +5,10 @@ int pins[3];
 int counter = 0;
 boolean countUp = true;
 boolean gameOver = false;
+int scorePlayerOne = 0;
+int scorePlayerTwo = 0;
 
+boolean onOff = true;
 #define onOffPin 7
 #define buttonOne 2
 #define buttonTwo 3
@@ -18,7 +21,7 @@ void setup() {
   pinMode(buttonOne, INPUT_PULLUP);
   pinMode(buttonTwo, INPUT_PULLUP);
   pinMode(onOffPin, OUTPUT);
-  digitalWrite(onOffPin, HIGH);
+  digitalWrite(onOffPin, onOff);
   
   for (int i = 0; i < 3; i++) {
     //Assign number of pins
@@ -39,11 +42,18 @@ void loop() {
   }
   Serial.println(counter);
   delay(1000); //wait 1s
-  if (countUp){
-    counter++;
+  
+  if (!gameOver) {
+    if (countUp){
+      counter++;
+    }
+    else {
+      counter--;
+    }
   }
-  else {
-    counter--;
+  if (gameOver) {
+    onOff = !onOff;
+    digitalWrite(onOffPin, onOff);
   }
 }
 void hitOne() {
@@ -62,7 +72,7 @@ void hitTwo() {
   resetGame();
 }
 void resetGame() {
-  if (gameOverTimer - millis() > timer && gameOver) {//Reset game variables
+  if (gameOverTimer - millis() > 2000 && gameOver) {//Reset game variables
     if (counter > 7){
       counter = 0;
       countUp = true;
@@ -73,14 +83,24 @@ void resetGame() {
     }
     gameOver = false;
     writeCounter();
-    digitalWrite(onOffPin, HIGH);
+    onOff = true;
+    digitalWrite(onOffPin, onOff);
   }
 }
 
 void setGameOver() {
+  if (counter > 7){
+    scorePlayerOne ++;
+    counter = 7; 
+  }
+  if (counter < 0){
+    scorePlayerTwo ++;
+    counter = 0; 
+  }
   gameOver = true;
   gameOverTimer = millis();
-  digitalWrite(onOffPin, LOW);
+  onOff = false;
+  digitalWrite(onOffPin, onOff);
 }
 
 void writeCounter() {
