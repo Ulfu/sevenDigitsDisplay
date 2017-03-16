@@ -1,5 +1,5 @@
 const int timer = 500; //
-int gameOverTimer;//
+unsigned long gameOverTimer;//
 int pins[3];
 //Set game variables
 int counter = 0;
@@ -44,6 +44,8 @@ void loop() {
   Serial.println(counter);
   
   if (!gameOver) {
+    onOff = true;
+    digitalWrite(onOffPin, onOff);
     delay(ledSpeed); //wait
     if (countUp){
       counter++;
@@ -55,31 +57,33 @@ void loop() {
   if (gameOver) {
     delay(1000); //wait
     onOff = !onOff;
-    digitalWrite(onOffPin, onOff);
+    if (gameOver) digitalWrite(onOffPin, onOff);
   }
 }
 void hitOne() {
-  if (counter == 0 && !countUp && buttonOneClicked - millis() > timer) {
+  if (counter == 0 && !countUp && millis() - buttonOneClicked> timer && !gameOver) {
     buttonOneClicked = millis();
     countUp = !countUp;
+    ledSpeed *= 0.8;
   }
   resetGame();
 }
 
 void hitTwo() {
-  if (counter == 7 && countUp && buttonTwoClicked - millis() > timer) {
+  if (counter == 7 && countUp && millis() - buttonTwoClicked > timer && !gameOver) {
     buttonTwoClicked = millis();
     countUp = !countUp;
+    ledSpeed *= 0.8;
   }
   resetGame();
 }
 void resetGame() {
-  if (gameOverTimer - millis() > 2000 && gameOver) {//Reset game variables
+  if (millis() - gameOverTimer > 2000 && gameOver) {//Reset game variables
     if (counter >= 7){
       counter = 0;
       countUp = true;
     }
-    if (counter =< 0){
+    else if (counter <= 0){
       counter = 7;
       countUp = false;
     }
@@ -91,7 +95,7 @@ void resetGame() {
 }
 
 void setGameOver() {
-  ledSpeed *= 0.8;
+  ledSpeed = 800;
   if (counter > 7){
     scorePlayerOne ++;
     counter = 7; 
