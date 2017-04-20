@@ -107,7 +107,7 @@ void resetGame() {
 }
 
 void setGameOver() {
-  ledSpeed = 800;
+  ledSpeed = 600;
   if (counter > 15){
     scorePlayerOne ++;
     counter = 15; 
