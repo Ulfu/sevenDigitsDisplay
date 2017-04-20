@@ -17,10 +17,8 @@ boolean gameOver = false;
 boolean scorePhase = false;
 int scorePlayerOne = 0;
 int scorePlayerTwo = 0;
-int ledSpeed = 600;
+int ledSpeed = 500;
 
-//boolean onOff = true;
-//#define onOffPin 7
 #define buttonOne 2
 #define buttonTwo 3
 
@@ -34,8 +32,6 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  //pinMode(onOffPin, OUTPUT);
-  //digitalWrite(onOffPin, onOff);
   
   attachInterrupt(digitalPinToInterrupt(buttonOne), hitOne, FALLING);
   attachInterrupt(digitalPinToInterrupt(buttonTwo), hitTwo, FALLING);
@@ -51,8 +47,6 @@ void loop() {
   
   if (!gameOver) {//If not game over continue the game
     writeToRegister(prepareForRegister(counter));
-    //onOff = true;
-    //digitalWrite(onOffPin, onOff);
     delay(ledSpeed); //wait
     if (countUp){
       counter++;
@@ -62,9 +56,10 @@ void loop() {
     }
   }
   if (gameOver && !scorePhase) {
-    //delay(300); //wait
-    //onOff = !onOff;
-    //if (gameOver) digitalWrite(onOffPin, onOff);
+    writeToRegister(prepareForRegister(counter));
+    delay(100); //wait
+    writeToRegister(0);
+    delay(100); //wait
     if (millis() - gameOverTimer > 1000) scorePhase = true;
   }
   if (gameOver && scorePhase) {
@@ -101,13 +96,11 @@ void resetGame() {
     scorePhase = false;
     gameOver = false;
     writeToRegister(prepareForRegister(counter));
-    //onOff = true;
-    //digitalWrite(onOffPin, onOff);
   }
 }
 
 void setGameOver() {
-  ledSpeed = 600;
+  ledSpeed = 500;
   if (counter > 15){
     scorePlayerOne ++;
     counter = 15; 
@@ -118,8 +111,6 @@ void setGameOver() {
   }
   gameOver = true;
   gameOverTimer = millis();
-  //onOff = false;
-  //digitalWrite(onOffPin, onOff);
 }
 
 unsigned int prepareForRegister(int pos){
