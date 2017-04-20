@@ -1,4 +1,4 @@
-const int timer = 500; //The minimum time beetween every press
+const int timer = 300; //The minimum time beetween every press
 unsigned long gameOverTimer;//Save when last game over event occured
 
 #define latchPin 4
@@ -56,7 +56,8 @@ void loop() {
     }
   }
   if (gameOver && !scorePhase) {
-    writeToRegister(prepareForRegister(counter));
+    if (counter == 15) writeToRegister(prepareScoreForRegister(0, 8));
+    if (counter == 0) writeToRegister(prepareScoreForRegister(8, 0));
     delay(100); //wait
     writeToRegister(0);
     delay(100); //wait
@@ -111,6 +112,7 @@ void setGameOver() {
   }
   gameOver = true;
   gameOverTimer = millis();
+  tone(11, 50, 1000); //Play a tone on pin 11 for 1s
 }
 
 unsigned int prepareForRegister(int pos){
